@@ -1,6 +1,9 @@
 # '''
 # Linked List hash table key/value pair
 # '''
+
+from dynamic_array import dynamic_array
+
 class LinkedPair:
     def __init__(self, key, value):
         self.key = key
@@ -16,15 +19,18 @@ class HashTable:
         self.capacity = capacity  # Number of buckets in the hash table
         self.storage = [None] * capacity
 
-
+    # _ means private function, should not be used outside of class, but you can
     def _hash(self, key):
         '''
         Hash an arbitrary key and return an integer.
 
         You may replace the Python hash with DJB2 as a stretch goal.
         '''
-        return hash(key)
+        x = hash(key)
+        print('x', x)
 
+        return x
+    # _hash(3,'8')
 
     def _hash_djb2(self, key):
         '''
@@ -43,6 +49,18 @@ class HashTable:
         return self._hash(key) % self.capacity
 
 
+        # if self.capacity is not FULL:
+    #     if self.capacity:
+    #         current_next = self.next
+    #         self.next = LinkedPair(value, self, current_next)
+    #     else:
+    #         self.key = key
+    #         print('k',self.key)
+    #         self.value = value
+    #         print('v',self.value)
+    #
+    # print(insert(3, 3, 5))
+
     def insert(self, key, value):
         '''
         Store the value with the given key.
@@ -51,9 +69,16 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
 
+        index = self._hash_mod(key)
 
+        if self.storage[index] is not None:
+            print(f"WARNING: Collusion has occured at {index}")
+
+        else:
+            self.storage[index] = (key, value)
+
+        return
 
     def remove(self, key):
         '''
@@ -63,8 +88,18 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        index = self._hash_mod(key)
 
+        if self.storage[index] is not None:
+            if self.storage[index][0] == key:
+                self.storage[index] = None
+            else:
+                print(f"WARNING: Collusion has occured at {index}")
+
+        else:
+            print(f"Warning key ({key}) not found")
+
+        return
 
     def retrieve(self, key):
         '''
@@ -74,8 +109,18 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        index = self._hash_mod(key)
 
+        if self.storage[index] is not None:
+            if self.storage[index][0] == key:
+                return self.storage[index][1]
+            else:
+                print(f"WARNING: Collusion has occured at {index}")
+
+        else:
+            return None
+
+        return
 
     def resize(self):
         '''
@@ -84,8 +129,12 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        old_storage = self.storage
+        self.capacity *= 2
+        self.storage = [None] * self.capacity
 
+        for item in old_storage:
+            self.insert(item[0], item[1])
 
 
 if __name__ == "__main__":
