@@ -1,6 +1,7 @@
+import hashlib
 # '''
 # Linked List hash table key/value pair
-# '''
+# Singly linked list -- LinkedPair'''
 class LinkedPair:
     def __init__(self, key, value):
         self.key = key
@@ -23,7 +24,7 @@ class HashTable:
 
         You may replace the Python hash with DJB2 as a stretch goal.
         '''
-        return hash(key)
+        return hashlib.sha256(key.encode())
 
 
     def _hash_djb2(self, key):
@@ -51,7 +52,12 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        index = self._hash_mod(key)
+
+        if self.storage[index] is not None:
+            print("error: key in use")
+        else:
+            self.storage[index] = value
 
 
 
@@ -63,7 +69,12 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        index = self._hash_mod(key)
+
+        if self.storage[index] is not None:
+            self.storage[index] = None
+        else:
+            print('warning key not found')
 
 
     def retrieve(self, key):
@@ -74,7 +85,10 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        index = self._hash_mod(key)
+        # if its none it meets spec, still works
+        return self.storage[index]
+
 
 
     def resize(self):
@@ -84,7 +98,17 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+
+
+        old_storage = self.storage.copy()
+        self.capacity = self.capacity * 2
+        self.storage = [None] * self.capacity
+
+        for bucket_item in old_storage:
+            self.insert(bucket_item)
+
+
+
 
 
 
